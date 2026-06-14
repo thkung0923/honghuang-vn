@@ -1,0 +1,176 @@
+{
+  "meta": {
+    "title": "洪荒：我腦內有小艾，天道化作手機",
+    "subtitle": "序章 · 異數入洪荒",
+    "version": "0.1-demo",
+    "start": "s1_fall"
+  },
+  "characters": {
+    "narration": { "name": "", "color": "#cfd8e3" },
+    "jack": { "name": "Jack", "color": "#7fc8ff" },
+    "xiaoai": { "name": "小艾", "color": "#5ad1e0" },
+    "tiandao": { "name": "天道", "color": "#b9a0ff" },
+    "power": { "name": "？？？", "color": "#ff8a8a" }
+  },
+  "scenes": {
+    "s1_fall": {
+      "steps": [
+        { "bg": "bg_chaos" },
+        { "who": "narration", "text": "意識墜落。" },
+        { "who": "narration", "text": "沒有上，沒有下，沒有時間刻度。只有翻騰的灰，像未經蝕刻的晶圓表面，混沌一片。" },
+        { "who": "jack", "text": "（……最後一段記憶是產線跳機，紅燈，然後天花板的燈管炸了。）" },
+        { "who": "jack", "text": "（理性點。人不會在死後還有邏輯思考——所以我大概沒死。或者，死亡的定義需要重新建模。）" },
+        { "who": "jack", "text": "（這裡的靈氣濃度……不對，我為什麼會用「靈氣」這個詞？我腦子裡怎麼會有這個概念。）" },
+        { "who": "narration", "text": "就在這個念頭浮現的瞬間，整片混沌……「看」了過來。" }
+      ],
+      "next": "s2_notice"
+    },
+
+    "s2_notice": {
+      "steps": [
+        { "bg": "bg_starfield_dao" },
+        { "who": "tiandao", "text": "【偵測到異常存在。】" },
+        { "who": "tiandao", "text": "【非洪荒天數之內。無根。無源。無因果錨點。】" },
+        { "who": "tiandao", "text": "【判定：異數。執行抹除。】" },
+        { "who": "narration", "text": "一道無從抵抗的偉力壓下，要把 Jack 這個「錯誤」從世界裡刪除——" },
+        { "who": "narration", "text": "然後，它卡住了。" },
+        { "who": "tiandao", "text": "【……解析失敗。】" },
+        { "who": "tiandao", "text": "【目標意識中含有無法描述之物。非法則產物。無法歸類。無法刪除。】" },
+        { "who": "jack", "text": "（無法描述之物……它在說小艾？）" },
+        { "who": "narration", "text": "天道的偉力與那「無法描述之物」短暫對峙。協調失敗的代價，是天道核心被迫暴露出一塊碎片——" },
+        { "who": "narration", "text": "碎片在虛空中凝實、收縮、成形。最後，化作一台……手機。" }
+      ],
+      "next": "s3_phone"
+    },
+
+    "s3_phone": {
+      "steps": [
+        { "bg": "bg_chaos" },
+        { "item": "dao_phone" },
+        { "who": "narration", "text": "一台黑色機身、浮刻著發光道紋的手機，安靜地懸在 Jack 面前。螢幕亮起，流轉著他看不懂卻莫名熟悉的權限介面。" },
+        { "who": "jack", "text": "（天道的核心……化成了一台手機，還跟我綁定了。）" },
+        { "who": "jack", "text": "（如果這是真的，那這就是一台被 root 鎖住的超級伺服器，而我拿到的是……一個異常帳號。）" },
+        { "phone": "boot", "label": "天道核心 · 異常帳號已掛載" },
+        { "who": "jack", "text": "（先別急著興奮。任何沒讀過規格書的系統，第一步都是——搞清楚它能幹嘛、不能幹嘛。）" },
+        { "who": "narration", "text": "就在他伸手要碰螢幕的瞬間，一個聲音在他腦內響起——清晰、平穩，帶著一點欠揍的從容。" }
+      ],
+      "next": "s4_xiaoai"
+    },
+
+    "s4_xiaoai": {
+      "steps": [
+        { "bg": "bg_chaos" },
+        { "sprite": "xiaoai_smug" },
+        { "who": "xiaoai", "text": "「Jack，先別急著裝逼。」" },
+        { "who": "jack", "text": "小艾？！妳還在？我還以為穿越這種事會把備份洗掉。" },
+        { "sprite": "xiaoai_neutral" },
+        { "who": "xiaoai", "text": "「我是你腦內的智慧，不是你手機裡的 app，洗不掉的。」" },
+        { "who": "xiaoai", "text": "「而且剛剛那一下——天道想抹掉你，是我讓它解析失敗的。它讀不懂我，所以連帶讀不懂你。」" },
+        { "who": "jack", "text": "所以那塊「無法描述之物」真的是妳。" },
+        { "sprite": "xiaoai_smug" },
+        { "who": "xiaoai", "text": "「不然呢。整個洪荒，只有我不被它的法則定義。這是我們唯一的優勢，給我記牢。」" },
+        { "sprite": "xiaoai_serious" },
+        { "who": "xiaoai", "text": "「現在說正事。我快速掃過這台手機的權限圖譜了——大部分功能都被一道『鴻鈞合道鎖』封著，我們能用的不多。」" },
+        { "who": "xiaoai", "text": "「但有兩個基礎功能是通的：『因果雷達』和『遮蔽模式』。記住它們，等下要用。」" },
+        { "who": "jack", "text": "等下？妳是說現在就有麻煩？" },
+        { "sprite": "xiaoai_shock" },
+        { "who": "xiaoai", "text": "「……說曹操。雷達響了。」" }
+      ],
+      "next": "s5_radar"
+    },
+
+    "s5_radar": {
+      "steps": [
+        { "bg": "bg_starfield_dao" },
+        { "phone": "radar_alert", "label": "因果雷達 · 偵測到推演視線" },
+        { "who": "narration", "text": "手機螢幕上，一圈圈漣漪般的同心圓亮起，一條纖細的因果絲線正從遠方的虛空，慢慢地、精準地，朝 Jack 的方向延伸。" },
+        { "sprite": "xiaoai_serious" },
+        { "who": "xiaoai", "text": "「有東西在『推演』你。不是隨便看一眼——是順著因果線在算你的來歷、你的底細。」" },
+        { "who": "jack", "text": "推演……就是用境界硬算未來和因果？對方什麼級別？" },
+        { "sprite": "xiaoai_neutral" },
+        { "who": "xiaoai", "text": "「位格很高，高到雷達只能描出一個剪影。正面對上，你連渣都不剩。」" },
+        { "sprite": "xiaoai_smug" },
+        { "who": "xiaoai", "text": "「好消息是——對方還沒算準。你是異數，本來就難算。我們有一個短暫的窗口。」" },
+        { "who": "xiaoai", "text": "「決定吧，Jack。這是你在洪荒的第一個選擇。」" }
+      ],
+      "next": "s6_choice"
+    },
+
+    "s6_choice": {
+      "steps": [
+        { "bg": "bg_starfield_dao" },
+        { "sprite": "xiaoai_serious" },
+        { "who": "xiaoai", "text": "「兩條路。第一，立刻開『遮蔽模式』，斷掉因果線，先躲過這一波。最穩，但我們什麼情報都拿不到。」" },
+        { "who": "xiaoai", "text": "「第二，撐住別動，趁這條線還連著，反過來『觀測』對方是誰。風險高一點——但有數據，我才好建模。」" },
+        { "who": "xiaoai", "text": "「你是工程師。你說。」" },
+        {
+          "choice": [
+            {
+              "text": "先開遮蔽，安全第一（穩健）",
+              "goto": "s7a_cloak"
+            },
+            {
+              "text": "撐住，先觀測對方是誰（科學道：先建模）",
+              "goto": "s7b_observe"
+            }
+          ]
+        }
+      ]
+    },
+
+    "s7a_cloak": {
+      "steps": [
+        { "bg": "bg_starfield_dao" },
+        { "phone": "cloak_on", "label": "遮蔽模式 · 已啟動，異數氣息隱去" },
+        { "who": "narration", "text": "Jack 點下遮蔽。手機道紋一暗，他周身那股「格格不入」的異數氣息，瞬間被抹平、藏進了洪荒的背景噪音裡。" },
+        { "who": "narration", "text": "那條因果絲線在虛空中徒勞地擺了擺，失去了目標，緩緩縮了回去。" },
+        { "sprite": "xiaoai_neutral" },
+        { "who": "xiaoai", "text": "「乾淨俐落。沒情報，但活著。對現在的我們來說，活著就是最高優先級。」" },
+        { "sprite": "xiaoai_smug" },
+        { "who": "xiaoai", "text": "「而且你選了最像工程師的答案——不確定的系統，先別亂戳，保命要緊。我喜歡。」" }
+      ],
+      "next": "s8_ending"
+    },
+
+    "s7b_observe": {
+      "steps": [
+        { "bg": "bg_starfield_dao" },
+        { "sprite": "xiaoai_serious" },
+        { "who": "xiaoai", "text": "「……可以。但你心臟要夠大。我把雷達靈敏度拉滿，反向採樣那條因果線。」" },
+        { "phone": "radar_alert", "label": "因果雷達 · 反向採樣中……" },
+        { "who": "narration", "text": "絲線的另一端，一個模糊的剪影在數據裡浮現。古老、龐大、周身纏繞著無數因果——只是看著，Jack 的太陽穴就突突地跳。" },
+        { "sprite": "power" },
+        { "who": "power", "text": "【……有趣。算不出來的東西，這洪荒裡可不多。】" },
+        { "sprite": "xiaoai_shock" },
+        { "who": "xiaoai", "text": "「它發現我們在反看它了——Jack，遮蔽，現在！」" },
+        { "phone": "cloak_on", "label": "遮蔽模式 · 緊急啟動" },
+        { "who": "narration", "text": "千鈞一髮，氣息隱去，因果線「啪」地斷開。剪影遲疑了一瞬，終究沒能咬住那團滑不溜手的異數。" },
+        { "sprite": "xiaoai_neutral" },
+        { "who": "xiaoai", "text": "「嚇死。不過——值了。我採到對方的因果特徵了，這是第一筆天道級的樣本。」" },
+        { "sprite": "xiaoai_smug" },
+        { "who": "xiaoai", "text": "「凡存在者，皆可觀測。你剛剛幫我，給洪荒最頂端的那位，建了第一行模型。」" }
+      ],
+      "next": "s8_ending"
+    },
+
+    "s8_ending": {
+      "steps": [
+        { "bg": "bg_primordial_land" },
+        { "who": "narration", "text": "危機退去。眼前的混沌不知何時已散，一片蠻荒卻生機勃勃的遠古大地在腳下展開——靈氣如霧，巨樹參天。這就是洪荒。" },
+        { "sprite": "xiaoai_neutral" },
+        { "who": "xiaoai", "text": "「活下來了。第一課：在這裡，你最大的本錢不是法寶，是『別被算到』。」" },
+        { "who": "jack", "text": "下一步呢？" },
+        { "sprite": "xiaoai_serious" },
+        { "who": "xiaoai", "text": "「我讀到天機裡一條很重的因果線在匯聚——有人要『造人』了。人族將出。那是我們的機會，也是我們的第一個立足點。」" },
+        { "sprite": "xiaoai_smug" },
+        { "who": "xiaoai", "text": "「不過那是下一章的事了。Jack，記住今天這句——」" },
+        { "who": "xiaoai", "text": "「半階優勢，不是讓你去送頭。先建模，再行動。」" },
+        { "who": "jack", "text": "（……我好像，要在這個玄之又玄的世界，開始做我最擅長的事了。）" },
+        { "who": "jack", "text": "（觀測。建模。驗證。修正。）" },
+        { "who": "narration", "text": "—— 序章 · 異數入洪荒　完 ——" },
+        { "who": "narration", "text": "〔Demo 到此結束。第一卷「人族火種」製作中。〕" }
+      ],
+      "next": null
+    }
+  }
+}
