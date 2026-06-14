@@ -847,3 +847,225 @@ button {
   color: #5ad1e0;
   text-shadow: 0 0 8px rgba(90, 209, 224, 0.5);
 }
+
+/* ============================================================
+   直式手機沉浸優化
+   斷點：portrait 方向 + 寬度 ≤ 768px
+   所有變更均隔離在此 media query 內，不影響桌面／橫式
+   ============================================================ */
+@media (orientation: portrait) and (max-width: 768px) {
+
+  /* ----------------------------------------------------------
+     1. 片頭影片 — cover 填滿，裁切兩側，不留黑邊
+     ---------------------------------------------------------- */
+  #intro-video {
+    object-fit: cover;
+  }
+
+  /* 跳過 / 喇叭按鈕觸控區放大 */
+  #intro-skip-btn {
+    padding: 12px 22px;
+    font-size: 0.95rem;
+    right: 14px;
+    bottom: 14px;
+  }
+  #intro-mute-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 1.45rem;
+    left: 14px;
+    bottom: 14px;
+  }
+
+  /* ----------------------------------------------------------
+     2. 背景層 — 確保以高度為基準 cover，不留上下黑邊
+        背景圖（16:9）在直式下本來就會被 cover 裁切左右，
+        此處明確強制 background-size + 鎖定中央
+     ---------------------------------------------------------- */
+  .bg-sub {
+    background-size: cover;
+    background-position: center center;
+  }
+
+  /* ----------------------------------------------------------
+     3. 立繪 — 高度基準縮放、底部對齊、不超出螢幕
+     ---------------------------------------------------------- */
+  #sprite-layer {
+    /* 置中偏右下，底部貼齊對話框上緣 */
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 68vh;
+    justify-content: center;
+  }
+
+  .sprite-img {
+    height: 100%;
+    max-height: 68vh;
+    width: auto;
+    right: auto;
+    /* 立繪稍微偏右，讓左側留給文字空間 */
+    transform: translateX(12%);
+  }
+
+  /* 呼吸動畫在直式下也保留，但加上偏移基底 */
+  @keyframes sprite-breathe-portrait {
+    0%, 100% { transform: translateX(12%) translateY(0); }
+    50%      { transform: translateX(12%) translateY(-6px); }
+  }
+  .sprite-img.visible {
+    animation: sprite-breathe-portrait 4.2s ease-in-out infinite;
+  }
+
+  /* ----------------------------------------------------------
+     4. 對話框 — 全寬貼底、字級適合手機閱讀
+     ---------------------------------------------------------- */
+  #dialog-box {
+    margin: 0;                        /* 拿掉左右邊距，貼緊邊緣 */
+    border-radius: 14px 14px 0 0;    /* 底部直角，其餘圓角 */
+    height: auto;
+    min-height: 160px;
+    max-height: 30vh;
+    padding: 14px 18px 20px;
+  }
+
+  #dialog-name {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+
+  #dialog-text {
+    font-size: clamp(1.0rem, 4vw, 1.15rem);
+    line-height: 1.8;
+  }
+
+  /* ----------------------------------------------------------
+     5. 手機面板 — 移到右上角，縮小不遮內容
+     ---------------------------------------------------------- */
+  #phone-panel {
+    right: 10px;
+    top: 12px;             /* 改到右上角 */
+    bottom: auto;          /* 取消 bottom 定位 */
+    width: 140px;
+    height: 80px;
+    padding: 8px 10px;
+    font-size: 0.85em;
+  }
+
+  #phone-title {
+    font-size: 0.72rem;
+  }
+  #phone-icons {
+    font-size: 0.85rem;
+  }
+  #phone-label {
+    font-size: 0.62rem;
+    bottom: 7px;
+    left: 10px;
+    right: 10px;
+  }
+
+  /* 同心圓在小面板裡縮小一點 */
+  #phone-radar-rings {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* ----------------------------------------------------------
+     6. 選項層 — 往上推一點（對話框高度直式較高），觸控區放大
+     ---------------------------------------------------------- */
+  #choice-layer {
+    bottom: 32vh;
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  .choice-btn {
+    width: 100%;
+    max-width: 480px;
+    padding: 18px 20px;   /* 觸控區夠大 */
+    font-size: clamp(1.0rem, 3.8vw, 1.12rem);
+  }
+
+  /* ----------------------------------------------------------
+     7. 標題畫面微調 — 直式下縮短間距，按鈕組直排、置中
+     ---------------------------------------------------------- */
+  #title-content {
+    padding: 0 18px;
+  }
+
+  #game-title {
+    font-size: clamp(1.45rem, 6.5vw, 2.2rem);
+  }
+
+  #game-subtitle {
+    font-size: clamp(0.85rem, 3.2vw, 1.1rem);
+    letter-spacing: 0.2em;
+    margin-top: 12px;
+  }
+
+  #title-buttons {
+    margin-top: 32px;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .title-chapter-group {
+    min-width: 0;
+    width: 100%;
+    max-width: 300px;
+    align-items: center;
+  }
+
+  .title-chapter-divider {
+    width: 80px;
+    min-height: 1px;
+    background: linear-gradient(to right, transparent, rgba(90, 209, 224, 0.28), transparent);
+  }
+
+  #title-buttons button {
+    min-width: 0;
+    width: 100%;
+    max-width: 300px;
+    padding: 15px 20px;
+    font-size: 1.02rem;
+  }
+
+  #title-version {
+    margin-top: 24px;
+  }
+
+  /* ----------------------------------------------------------
+     8. 道具層 — 直式下稍微上移避免被對話框蓋住
+     ---------------------------------------------------------- */
+  #item-layer {
+    top: 36%;
+    max-width: 260px;
+    max-height: 35vh;
+  }
+
+  #item-img {
+    max-width: 260px;
+    max-height: 35vh;
+  }
+
+  /* ----------------------------------------------------------
+     9. 結局畫面 — 直式下字級微調
+     ---------------------------------------------------------- */
+  #ending-content h2 {
+    font-size: clamp(1.7rem, 7vw, 2.6rem);
+  }
+
+  #ending-buttons {
+    margin-top: 32px;
+  }
+
+  #ending-content button {
+    min-width: 0;
+    width: 80vw;
+    max-width: 300px;
+    padding: 15px 20px;
+  }
+
+}
