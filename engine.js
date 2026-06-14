@@ -1,7 +1,7 @@
 /* ============================================================
    洪荒：我腦內有小艾，天道化作手機 — engine.js
    純前端視覺小說引擎（file:// 可直接開啟，無 fetch / import）
-   v0.2 — 多劇本支援（序章 + 第一卷），分開存檔，新 phone 事件
+   v0.3 — 多劇本支援（序章 + 第一卷 + 第二卷），分開存檔，新 phone 事件
    ============================================================ */
 
 'use strict';
@@ -14,6 +14,8 @@
 const SCRIPTS = {};
 let volume1Status = 'pending'; // 'pending' | 'loading' | 'ready' | 'error'
 let volume1LoadCallbacks = []; // pending callbacks while status === 'loading'
+let volume2Status = 'pending'; // 'pending' | 'loading' | 'ready' | 'error'
+let volume2LoadCallbacks = [];
 
 /* 讀取 inline 序章 */
 (function loadPrologue() {
@@ -85,8 +87,65 @@ function loadVolume1(callback) {
   }
 }
 
+/* 非同步嘗試載入第二卷（優先使用 window.VOLUME2_DATA，fallback XHR） */
+function loadVolume2(callback) {
+  if (volume2Status === 'ready') { callback(true); return; }
+  if (volume2Status === 'error') { callback(false); return; }
+  if (volume2Status === 'loading') { volume2LoadCallbacks.push(callback); return; }
+
+  volume2Status = 'loading';
+  volume2LoadCallbacks.push(callback);
+
+  // 優先使用 <script> 預載的 window.VOLUME2_DATA（file:// 相容）
+  if (typeof window !== 'undefined' && window.VOLUME2_DATA) {
+    SCRIPTS['volume2'] = window.VOLUME2_DATA;
+    volume2Status = 'ready';
+    const cbs = volume2LoadCallbacks.splice(0);
+    cbs.forEach(cb => cb(true));
+    return;
+  }
+
+  // fallback：XHR（http:// 環境）
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', 'script/volume2.json', true);
+  xhr.onload = function () {
+    if (xhr.status === 200 || xhr.status === 0) {
+      try {
+        SCRIPTS['volume2'] = JSON.parse(xhr.responseText);
+        volume2Status = 'ready';
+        const cbs = volume2LoadCallbacks.splice(0);
+        cbs.forEach(cb => cb(true));
+      } catch (e) {
+        console.warn('[VN] volume2.json 解析失敗', e);
+        volume2Status = 'error';
+        const cbs = volume2LoadCallbacks.splice(0);
+        cbs.forEach(cb => cb(false));
+      }
+    } else {
+      volume2Status = 'error';
+      const cbs = volume2LoadCallbacks.splice(0);
+      cbs.forEach(cb => cb(false));
+    }
+  };
+  xhr.onerror = function () {
+    console.warn('[VN] volume2.json 無法存取（尚未製作或路徑不存在）');
+    volume2Status = 'error';
+    const cbs = volume2LoadCallbacks.splice(0);
+    cbs.forEach(cb => cb(false));
+  };
+
+  try {
+    xhr.send();
+  } catch (e) {
+    console.warn('[VN] volume2.json XHR 例外', e);
+    volume2Status = 'error';
+    const cbs = volume2LoadCallbacks.splice(0);
+    cbs.forEach(cb => cb(false));
+  }
+}
+
 /* ---------- 2. 當前執行中的劇本 ---------- */
-let activeScriptKey = 'prologue'; // 'prologue' | 'volume1'
+let activeScriptKey = 'prologue'; // 'prologue' | 'volume1' | 'volume2'
 
 function getActiveScript() { return SCRIPTS[activeScriptKey]; }
 function getMeta()       { const s = getActiveScript(); return s ? s.meta       : {}; }
@@ -115,7 +174,8 @@ const PHONE_AUTO_MS = 1500;
    ============================================================ */
 const SAVE_KEYS = {
   prologue: 'honghuang-vn-save-prologue',
-  volume1:  'honghuang-vn-save-volume1'
+  volume1:  'honghuang-vn-save-volume1',
+  volume2:  'honghuang-vn-save-volume2'
 };
 /* 向下相容：舊版存在 'honghuang-vn-save' 的讀取 */
 const LEGACY_SAVE_KEY = 'honghuang-vn-save';
@@ -187,6 +247,9 @@ function initTitle() {
   // 第一卷按鈕可見性（volume1Status 可能還是 pending，不影響顯示，先亮出來）
   updateVol1TitleBtn();
 
+  // 第二卷按鈕可見性
+  updateVol2TitleBtn();
+
   $('title-screen').style.display  = 'flex';
   $('title-screen').style.opacity  = '1';
   $('game-screen').style.display   = 'none';
@@ -216,6 +279,32 @@ function updateVol1TitleBtn() {
   const btnContV1 = $('btn-continue-v1');
   if (btnContV1) {
     btnContV1.style.display = (volume1Status === 'ready' && hasSaveV1) ? 'block' : 'none';
+  }
+}
+
+function updateVol2TitleBtn() {
+  const btn = $('btn-volume2');
+  if (!btn) return;
+
+  if (volume2Status === 'error') {
+    btn.disabled = true;
+    btn.textContent = '第二卷：巫妖大劫（製作中）';
+    btn.style.opacity = '0.5';
+    btn.style.cursor  = 'not-allowed';
+    const btnContV2 = $('btn-continue-v2');
+    if (btnContV2) btnContV2.style.display = 'none';
+    return;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '第二卷：巫妖大劫';
+  btn.style.opacity = '';
+  btn.style.cursor  = '';
+
+  const hasSaveV2 = hasSave('volume2');
+  const btnContV2 = $('btn-continue-v2');
+  if (btnContV2) {
+    btnContV2.style.display = (volume2Status === 'ready' && hasSaveV2) ? 'block' : 'none';
   }
 }
 
@@ -253,6 +342,38 @@ function startVolume1(fromSave) {
 
 function setVol1BtnLoading(loading) {
   const btn = $('btn-volume1');
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.textContent = '載入中…';
+  }
+}
+
+function startVolume2(fromSave) {
+  if (volume2Status === 'pending' || volume2Status === 'loading') {
+    setVol2BtnLoading(true);
+    loadVolume2(function(ok) {
+      setVol2BtnLoading(false);
+      updateVol2TitleBtn();
+      if (ok) {
+        activeScriptKey = 'volume2';
+        _startGame(fromSave);
+      } else {
+        alert('第二卷尚未製作完成，敬請期待！');
+      }
+    });
+    return;
+  }
+  if (volume2Status === 'error') {
+    alert('第二卷尚未製作完成，敬請期待！');
+    return;
+  }
+  activeScriptKey = 'volume2';
+  _startGame(fromSave);
+}
+
+function setVol2BtnLoading(loading) {
+  const btn = $('btn-volume2');
   if (!btn) return;
   if (loading) {
     btn.disabled = true;
@@ -355,7 +476,7 @@ function gotoScene(id) {
    ============================================================ */
 
 /* 所有合法的 phone 模式 */
-const PHONE_MODES = ['boot', 'radar_alert', 'cloak_on', 'merit_gain', 'patch_unlock'];
+const PHONE_MODES = ['boot', 'radar_alert', 'cloak_on', 'merit_gain', 'patch_unlock', 'calamity_alert'];
 
 function processStep() {
   if (!currentScene) return;
@@ -643,6 +764,10 @@ function updatePhoneIcon(mode, customIcon) {
     const src = customIcon || 'assets/ui/ui_patch.png';
     iconsEl.innerHTML = `<img class="phone-mode-icon" src="${src}" alt="patch"
       onerror="this.outerHTML='⬡'">`;
+  } else if (mode === 'calamity_alert') {
+    const src = customIcon || 'assets/ui/ui_calamity.png';
+    iconsEl.innerHTML = `<img class="phone-mode-icon calamity-icon" src="${src}" alt="calamity"
+      onerror="this.outerHTML='<span class=\\'calamity-fallback-icon\\'>⚠</span>'">`;
   } else {
     // 預設 emoji
     iconsEl.textContent = '⚡ 📡 🌙';
@@ -710,6 +835,9 @@ function showEnding() {
     if (activeScriptKey === 'prologue') {
       $('ending-title').textContent = '序章完';
       $('ending-sub').textContent   = '異數，已在洪荒落腳。';
+      // 隱藏「進入第二卷」按鈕（序章結局只顯示進入第一卷）
+      const btnEnterV2Prologue = $('btn-enter-v2');
+      if (btnEnterV2Prologue) btnEnterV2Prologue.style.display = 'none';
       // 顯示「進入第一卷」按鈕
       const btnEnterV1 = $('btn-enter-v1');
       if (btnEnterV1) {
@@ -744,11 +872,54 @@ function showEnding() {
       $('ending-sub').textContent   = (meta && meta.endingText) || '人族火種，已在洪荒燃起。';
       const btnEnterV1 = $('btn-enter-v1');
       if (btnEnterV1) btnEnterV1.style.display = 'none';
+
+      // 顯示「進入第二卷」按鈕
+      const btnEnterV2 = $('btn-enter-v2');
+      if (btnEnterV2) {
+        if (volume2Status === 'ready') {
+          btnEnterV2.style.display  = 'inline-block';
+          btnEnterV2.disabled       = false;
+          btnEnterV2.textContent    = '進入第二卷 ▶';
+          btnEnterV2.style.opacity  = '';
+          btnEnterV2.style.cursor   = '';
+        } else if (volume2Status === 'error') {
+          btnEnterV2.style.display  = 'inline-block';
+          btnEnterV2.disabled       = true;
+          btnEnterV2.textContent    = '第二卷製作中 …';
+          btnEnterV2.style.opacity  = '0.5';
+          btnEnterV2.style.cursor   = 'not-allowed';
+        } else {
+          // pending / loading — 嘗試載入後決定
+          btnEnterV2.style.display  = 'inline-block';
+          btnEnterV2.textContent    = '載入中 …';
+          btnEnterV2.disabled       = true;
+          loadVolume2(function(ok) {
+            if (ok) {
+              btnEnterV2.disabled     = false;
+              btnEnterV2.textContent  = '進入第二卷 ▶';
+              btnEnterV2.style.opacity = '';
+              btnEnterV2.style.cursor  = '';
+            } else {
+              btnEnterV2.textContent  = '第二卷製作中 …';
+              btnEnterV2.style.opacity = '0.5';
+            }
+          });
+        }
+      }
+    } else if (activeScriptKey === 'volume2') {
+      $('ending-title').textContent = '第二卷序章完';
+      $('ending-sub').textContent   = (meta && meta.endingText) || '大劫將至，棋局已開。';
+      const btnEnterV1 = $('btn-enter-v1');
+      if (btnEnterV1) btnEnterV1.style.display = 'none';
+      const btnEnterV2 = $('btn-enter-v2');
+      if (btnEnterV2) btnEnterV2.style.display = 'none';
     } else {
       $('ending-title').textContent = '完';
       $('ending-sub').textContent   = '';
       const btnEnterV1 = $('btn-enter-v1');
       if (btnEnterV1) btnEnterV1.style.display = 'none';
+      const btnEnterV2 = $('btn-enter-v2');
+      if (btnEnterV2) btnEnterV2.style.display = 'none';
     }
 
     ending.style.display = 'flex';
@@ -782,6 +953,19 @@ function enterVolume1FromEnding() {
   }, 700);
 }
 
+/* 從結局進入第二卷 */
+function enterVolume2FromEnding() {
+  const ending = $('ending-screen');
+  ending.classList.remove('visible');
+  setTimeout(() => {
+    ending.style.display = 'none';
+    resetStage();
+    currentScene = null;
+    currentStep  = 0;
+    startVolume2(false);
+  }, 700);
+}
+
 /* ============================================================
    18. 事件綁定
    ============================================================ */
@@ -798,6 +982,21 @@ document.addEventListener('DOMContentLoaded', () => {
         btnEnterV1.textContent   = '進入第一卷 ▶';
         btnEnterV1.style.opacity = '';
         btnEnterV1.style.cursor  = '';
+      }
+    }
+  });
+
+  // 在 DOMContentLoaded 時嘗試預載 volume2（背景非阻塞）
+  loadVolume2(function(ok) {
+    updateVol2TitleBtn();
+    // 若結局畫面正在顯示且是第一卷，嘗試更新進入第二卷按鈕
+    const btnEnterV2 = $('btn-enter-v2');
+    if (btnEnterV2 && $('ending-screen').classList.contains('visible') && activeScriptKey === 'volume1') {
+      if (ok) {
+        btnEnterV2.disabled      = false;
+        btnEnterV2.textContent   = '進入第二卷 ▶';
+        btnEnterV2.style.opacity = '';
+        btnEnterV2.style.cursor  = '';
       }
     }
   });
@@ -937,8 +1136,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* 掛到 window（嚴格模式 inline onclick 保險） */
-window.startGame            = startGame;
-window.startPrologue        = startPrologue;
-window.startVolume1         = startVolume1;
-window.backToTitle          = backToTitle;
+window.startGame              = startGame;
+window.startPrologue          = startPrologue;
+window.startVolume1           = startVolume1;
+window.startVolume2           = startVolume2;
+window.backToTitle            = backToTitle;
 window.enterVolume1FromEnding = enterVolume1FromEnding;
+window.enterVolume2FromEnding = enterVolume2FromEnding;

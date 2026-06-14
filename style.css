@@ -194,6 +194,28 @@ button {
   transform: translateY(-1px);
 }
 
+/* 第二卷入口：血焰紅色系（大劫） */
+#btn-volume2 {
+  border-color: rgba(255, 120, 90, 0.55) !important;
+  color: #ffd4c8 !important;
+  box-shadow: 0 0 14px rgba(255, 90, 74, 0.18) !important;
+}
+#btn-volume2:hover:not(:disabled) {
+  border-color: rgba(255, 120, 90, 0.95) !important;
+  box-shadow: 0 0 22px rgba(255, 90, 74, 0.52) !important;
+  transform: translateY(-1px);
+}
+
+/* 第二卷「繼續」按鈕：紅紫系 */
+#btn-continue-v2 {
+  border-color: rgba(214, 168, 255, 0.55) !important;
+  box-shadow: 0 0 14px rgba(214, 168, 255, 0.2) !important;
+}
+#btn-continue-v2:hover:not(:disabled) {
+  border-color: rgba(214, 168, 255, 0.95) !important;
+  box-shadow: 0 0 22px rgba(214, 168, 255, 0.5) !important;
+}
+
 #title-version {
   margin-top: 36px;
   font-size: 0.75rem;
@@ -517,7 +539,92 @@ button {
   }
 }
 
-/* ---------- phone mode icon（merit_gain / patch_unlock 的圖片 icon） ---------- */
+/* ---------- calamity_alert：大劫預警，深紅急迫閃爍 + 震動 ---------- */
+#phone-panel.calamity_alert {
+  border-color: rgba(255, 90, 74, 1);
+  animation: phone-calamity 0.55s ease-in-out infinite;
+}
+#phone-panel.calamity_alert #phone-title {
+  color: #ff8070;
+  text-shadow: 0 0 10px rgba(255, 60, 40, 0.8);
+  animation: calamity-title-flash 0.55s ease-in-out infinite;
+}
+#phone-panel.calamity_alert #phone-label {
+  color: #ffccc6;
+  text-shadow: 0 0 8px rgba(255, 60, 40, 0.55);
+}
+#phone-panel.calamity_alert #phone-radar-rings { opacity: 1; }
+#phone-panel.calamity_alert .radar-ring {
+  border-color: rgba(255, 90, 74, 0.9);
+  animation-name: calamity-ring-pulse;
+  animation-duration: 0.9s;
+}
+
+@keyframes phone-calamity {
+  0% {
+    box-shadow:
+      0 0 18px rgba(255, 60, 40, 0.65),
+      inset 0 0 20px rgba(255, 40, 20, 0.18);
+    border-color: rgba(255, 90, 74, 0.75);
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  15% {
+    transform: translateY(0) scale(1) rotate(-0.8deg);
+  }
+  30% {
+    box-shadow:
+      0 0 42px rgba(255, 40, 20, 1),
+      inset 0 0 32px rgba(255, 40, 20, 0.36);
+    border-color: rgba(255, 40, 20, 1);
+    transform: translateY(-2px) scale(1.03) rotate(0.8deg);
+  }
+  50% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  65% {
+    transform: translateY(0) scale(1) rotate(-0.6deg);
+  }
+  80% {
+    box-shadow:
+      0 0 36px rgba(255, 50, 30, 0.88),
+      inset 0 0 26px rgba(255, 50, 30, 0.28);
+    border-color: rgba(255, 70, 50, 0.9);
+    transform: translateY(-1px) scale(1.015) rotate(0.6deg);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes calamity-title-flash {
+  0%, 100% { opacity: 1; }
+  45%       { opacity: 0.55; }
+}
+
+@keyframes calamity-ring-pulse {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; border-color: rgba(255, 90, 74, 0.9); }
+  100% { transform: translate(-50%, -50%) scale(4.5); opacity: 0; border-color: rgba(255, 30, 10, 0.2); }
+}
+
+/* calamity icon 圖片與 fallback 文字 */
+.calamity-icon {
+  filter: drop-shadow(0 0 6px rgba(255, 60, 40, 0.85)) drop-shadow(0 0 12px rgba(255, 30, 10, 0.55));
+  animation: calamity-icon-pulse 0.55s ease-in-out infinite;
+}
+@keyframes calamity-icon-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 60, 40, 0.85)) drop-shadow(0 0 12px rgba(255, 30, 10, 0.55)); }
+  50%       { filter: drop-shadow(0 0 14px rgba(255, 30, 10, 1))   drop-shadow(0 0 24px rgba(255, 0, 0, 0.7)); }
+}
+
+.calamity-fallback-icon {
+  font-size: 1.1rem;
+  color: #ff5a4a;
+  text-shadow: 0 0 8px rgba(255, 60, 40, 0.9), 0 0 20px rgba(255, 30, 10, 0.6);
+  animation: calamity-icon-pulse 0.55s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* ---------- phone mode icon（merit_gain / patch_unlock / calamity_alert 的圖片 icon） ---------- */
 .phone-mode-icon {
   width: 22px;
   height: 22px;
@@ -727,6 +834,17 @@ button {
 #btn-enter-v1:hover:not(:disabled) {
   border-color: rgba(255, 230, 140, 0.98) !important;
   box-shadow: 0 0 28px rgba(255, 200, 80, 0.58) !important;
+}
+
+/* 「進入第二卷」按鈕：血焰紅強調 */
+#btn-enter-v2 {
+  border-color: rgba(255, 120, 90, 0.65) !important;
+  color: #ffd4c8 !important;
+  box-shadow: 0 0 18px rgba(255, 90, 74, 0.22) !important;
+}
+#btn-enter-v2:hover:not(:disabled) {
+  border-color: rgba(255, 120, 90, 0.98) !important;
+  box-shadow: 0 0 28px rgba(255, 90, 74, 0.60) !important;
 }
 
 /* ============================================================

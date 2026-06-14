@@ -41,6 +41,12 @@
           <button id="btn-volume1" onclick="startVolume1(false)">第一卷：人族火種</button>
           <button id="btn-continue-v1" onclick="startVolume1(true)" style="display:none">繼續第一卷</button>
         </div>
+        <div class="title-chapter-divider"></div>
+        <div class="title-chapter-group">
+          <div class="title-chapter-label">第二卷 · 巫妖大劫</div>
+          <button id="btn-volume2" onclick="startVolume2(false)">第二卷：巫妖大劫</button>
+          <button id="btn-continue-v2" onclick="startVolume2(true)" style="display:none">繼續第二卷</button>
+        </div>
       </div>
       <div id="title-version"></div>
       <div id="title-replay-intro"><button id="btn-replay-intro" onclick="replayIntro()">▷ 重看片頭</button></div>
@@ -93,6 +99,7 @@
       <p id="ending-sub">異數，已在洪荒落腳。</p>
       <div id="ending-buttons">
         <button id="btn-enter-v1" onclick="enterVolume1FromEnding()" style="display:none">進入第一卷 ▶</button>
+        <button id="btn-enter-v2" onclick="enterVolume2FromEnding()" style="display:none">進入第二卷 ▶</button>
         <button onclick="backToTitle()">回到標題</button>
       </div>
     </div>
@@ -260,6 +267,15 @@
   </script>
 
   <script src="script/volume1.data.js"></script>
+  <!-- volume2.data.js 若不存在（製作中），載入失敗不影響其他卷 -->
+  <script>
+    (function() {
+      var s = document.createElement('script');
+      s.src = 'script/volume2.data.js';
+      s.onerror = function() { /* volume2.data.js 尚未存在，靜默忽略 */ };
+      document.currentScript.parentNode.insertBefore(s, document.currentScript.nextSibling);
+    })();
+  </script>
   <script src="engine.js"></script>
 </body>
 </html>
