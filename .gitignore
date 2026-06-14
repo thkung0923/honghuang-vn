@@ -8,3 +8,7 @@ desktop.ini
 *~
 .vscode/
 .idea/
+
+# 立繪去背備份（本地保留，不上傳）
+assets/characters/_original_backup/
+assets/characters/_test_*
